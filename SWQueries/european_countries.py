@@ -14,13 +14,16 @@ def query():
     PREFIX geo-ont:<http://www.geonames.org/ontology#>
     PREFIX ourvocab:<http://example.org/>
 
-    SELECT  COUNT(*)
+    SELECT  ?european_country ?description
     WHERE {
 
 
     ?european_country dcterms:subject category:Countries_in_Europe.
     ?european_country rdf:type dbpedia-owl:Place.
+    ?european_country rdfs:comment ?description
+
+    FILTER (lang(?description) = "" || lang(?description) = "en")
 
     }
-    LIMIT 200
+LIMIT 200
 """
