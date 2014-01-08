@@ -9,8 +9,10 @@ from django.conf import settings
 
 
 # sys.path.append('./../dbpedia')
-# from geoToCountry import getCountry
+from geoToCountry import getCountry
+from AllegroGraph import AllegroQueryInterface
 
+from geoSpatial.pointToCountryCode import Points
 
 
 def mapJson(genre):
@@ -73,24 +75,136 @@ def mapJson(genre):
     }
     """ % genre
 
-    countQuery  = """
-    SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o}
-    """
+    # countQuery  = """
+    # SELECT (COUNT(*) AS ?count) WHERE { ?s ?p ?o}
+    # """
 
-    sparql = SPARQLWrapper(settings.SERVER_URL)
+    # sparql = SPARQLWrapper(settings.SERVER_URL)
+    #
+    #
+    # sparql.setQuery(superQuery)
+    #
+    # sparql.setReturnFormat(JSON)
+    #
+    # results = sparql.query().convert()
 
 
-    sparql.setQuery(superQuery)
+    sparql = AllegroQueryInterface.Store()
 
-    sparql.setReturnFormat(JSON)
-
-    results = sparql.query().convert()
+    res = sparql.query(superQuery)
 
 
+    map_to_points =  Points("./geoSpatial/pointsToCountry.json")
+
+    # res = results["results"]["bindings"]
+
+    # hits = []
+    # listeners = []
+    # performers = []
+    # titles = []
+    # points = []
+    dates = []
+
+    for result in res:
+        year = str(result[6])
+
+        temp = re.findall(r'\d{4}', year)
+        if temp:
+            year = temp[0]
+            year = year[:-1] + '0'
+            dates.append(year)
+
+    distinct_years = list(set(dates))
+
+    hits = {}
+    listeners = {}
+    performers = []
+    points = []
+    countrynames = []
+    totalhits = {}
+
+    for year in distinct_years:
+        hits["%s" % year] = []
+
+    for year in distinct_years:
+        listeners["%s" % year] = []
+
+    for year in distinct_years:
+        totalhits["%s" % year] = {}
+
+    for result in res:
+
+        year = str(result[6])
+
+        res = re.findall(r'\d{4}', year)
+
+        if res:
+            year = res[0]
+            year = year[:-1] + '0'
+            # dates.append(year)
+
+            lem = str(result[5]).replace("POINT(", "")
+            lem = lem.replace(")", "")
+
+            ena, duo = lem.split(" ")
+            points.append([duo, ena])
+            # myCountry = getCountry(duo, ena)
+            myCountry = map_to_points.CountryCode(duo,ena)
+            countrynames.append(myCountry)
+            performers.append(result[4])
+
+            the_country_is_already_there = False
+
+            for decade in distinct_years:
+
+                # for example in totalhits["%s" % decade]:
+                #     if myCountry in example.keys():
+                #         the_country_is_already_there = True
+                #         break
+
+                if myCountry in totalhits["%s" % decade].keys():
+                        the_country_is_already_there = True
+                        break
+
+                if year == decade:
+
+                    hits["%s" % decade].append(str(result[3]))
+                    if the_country_is_already_there:
+
+                        for temporary in totalhits["%s" % decade]:
+                            if myCountry in temporary.keys():
+                                temporary[myCountry] = int(temporary[myCountry]) + int(result[3])
+                                break
+
+                                # totalhits["%s"%decade].append({myCountry: result['hits']['value']})
+                    else:
+                        totalhits["%s" % decade][myCountry]= int(result[3])
+                    listeners["%s" % decade].append(int(result[2]))
+
+                    # titles.append(result['title']['value'])
+                else:
+                    hits["%s" % decade].append(0)
+                    if the_country_is_already_there:
+                        continue
+                    else:
+                        totalhits["%s" % decade][myCountry] =  0
+                    listeners["%s" % decade].append(0)
+
+        else:
+            continue
+
+    countrynames = list(set(countrynames))
 
     finalized_json = {}
 
-
+    finalized_json['names'] = performers
+    finalized_json['hits'] = hits
+    finalized_json['viewers'] = listeners
+    # finalized_json['titles'] = titles
+    finalized_json['coords'] = points
+    finalized_json['dates'] = distinct_years
+    finalized_json["country_names"] = countrynames
+    finalized_json["total_hits"] = totalhits
 
     # dumpData = open("kouklaki.json", "w")
     # json.dump(finalized_json, dumpData)
