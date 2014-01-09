@@ -1,0 +1,11 @@
+PREFIX crm: <http://erlangen-crm.org/current/>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT DISTINCT ?bowl
+{?bowl_term skos:prefLabel "bowl" .                      #Find the thesaurus term for bowls
+
+ {?bowl crm:P2_has_type ?bowl_term}                      #Find those objects directly categorised under this
+ UNION                                                    #and/or
+ {?bowl crm:P2_has_type ?bowl_like_term .
+  ?bowl_like_term skos:broaderTransitive ?bowl_term} .    #objects that are categorised below this in the hierarchy
+}
