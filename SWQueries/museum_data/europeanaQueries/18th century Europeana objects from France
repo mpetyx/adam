@@ -1,0 +1,15 @@
+# 18th century Europeana objects from France
+		PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+		PREFIX ore: <http://www.openarchives.org/ore/terms/>
+
+		SELECT DISTINCT ?CHO ?year
+		WHERE {
+
+				?EuropeanaObject  edm:year  ?year ;
+								  edm:hasMet <http://sws.geonames.org/3017382/> .
+				?EuropeanaObject ore:proxyFor ?CHO.
+				FILTER (?year < "1800")
+				FILTER (?year > "1700")
+
+		}
+		ORDER BY asc (?year)

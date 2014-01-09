@@ -1,0 +1,14 @@
+# The time of Europeana objects
+		PREFIX owl: <http://www.w3.org/2002/07/owl#>
+		PREFIX ore: <http://www.openarchives.org/ore/terms/>
+		PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+
+		SELECT DISTINCT ?EuropeanaObject ?time
+		WHERE {
+
+         		?proxy ore:proxyFor ?EuropeanaObject ;
+	       		 edm:hasMet ?time .
+         		FILTER( regex(str(?time),"semium"))
+
+		}
+		LIMIT 100

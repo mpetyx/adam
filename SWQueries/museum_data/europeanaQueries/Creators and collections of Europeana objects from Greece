@@ -1,0 +1,12 @@
+# Creators and collections of Europeana objects from Greece
+		PREFIX dc: <http://purl.org/dc/elements/1.1/>
+		PREFIX ens:    <http://www.europeana.eu/schemas/edm/>
+        SELECT DISTINCT ?CHO ?Creator ?Collection
+        WHERE {
+
+        ?EuropeanaObject dc:creator ?Creator ;
+                         edm:collectionName ?Collection ;
+                         edm:country "greece".
+        ?EuropeanaObject ens:aggregatedCHO    ?CHO.
+        }
+        LIMIT 100

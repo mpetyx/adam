@@ -1,0 +1,17 @@
+# List of Europeana enriched objects from from Sweden, their equivalents and related entities
+		PREFIX ore: <http://www.openarchives.org/ore/terms/>
+		PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+		PREFIX dc: <http://purl.org/dc/elements/1.1/>
+		PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+
+		SELECT ?object ?enrichment ?equivalentOfAggregatedObject
+		WHERE {
+
+        		?a edm:aggregatedCHO ?object .
+        		?o owl:sameAs ?equivalentOfAggregatedObject .
+        		?a edm:country "sweden" .
+		       ?europeanaProxy ore:proxyIn ?a .
+		       ?europeanaProxy edm:hasMet ?enrichment
+
+		}
+		LIMIT 100

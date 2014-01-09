@@ -1,0 +1,7 @@
+# Search objects which contains the word "painting" in its description
+PREFIX dc: <http://purl.org/dc/elements/1.1/>
+SELECT ?item ?description {
+  ?proxy ore:proxyFor ?item; dc:description ?description.
+  ?description luc: "painting"
+}
+LIMIT 100
