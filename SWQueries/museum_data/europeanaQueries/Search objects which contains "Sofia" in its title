@@ -1,7 +1,0 @@
-# Search objects which contains "Sofia" in its title
-PREFIX dc: <http://purl.org/dc/elements/1.1/>
-SELECT ?item ?title {
-  ?proxy ore:proxyFor ?item; dc:title ?title.
-  ?title luc: "Sofia"
-}
-LIMIT 100

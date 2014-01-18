@@ -1,8 +1,0 @@
-PREFIX crm: <http://erlangen-crm.org/current/>
-PREFIX fts: <http://www.ontotext.com/owlim/fts#>
-
-SELECT DISTINCT ?object
-{ ?object crm:P102_has_title ?title .                    #Find the title resource for an object
-  ?title rdfs:label ?label .                              #find the label attached to that title
-  FILTER(REGEX(?label, "Rosetta Stone"))                  #match the 'Rosetta Stone' token by regular expression
-}

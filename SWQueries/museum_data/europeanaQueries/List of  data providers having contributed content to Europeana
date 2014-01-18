@@ -1,9 +1,0 @@
-# List of  data providers having contributed content to Europeana
-		PREFIX edm: <http://www.europeana.eu/schemas/edm/>
-
-		SELECT DISTINCT ?DataProvider
-		WHERE {
-
-  			?Aggregation edm:dataProvider ?DataProvider .
-
-		}
