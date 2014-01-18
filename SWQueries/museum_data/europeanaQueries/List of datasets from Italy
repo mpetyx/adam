@@ -1,0 +1,10 @@
+# List of datasets from Italy
+		PREFIX edm: <http://www.europeana.eu/schemas/edm/>
+		SELECT DISTINCT ?dataset
+		WHERE {
+
+        		?europeanaAggregation edm:collectionName ?dataset ;
+                              edm:country "italy" .
+
+		}
+		LIMIT 100
