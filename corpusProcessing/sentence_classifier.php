@@ -38,7 +38,7 @@ echo "Tokenising Sentences\n";
 preg_match_all('~(\S.+?[.!?])(?=\s+|$)~',$this->corpus,$m);
 return $m;}
 public function tokenize_sentence($sentence){
-preg_match_all('~([\w.,]+)~',substr($sentence,0,-1),$m);
+preg_match_all('~([\w]+)~',substr($sentence,0,-1),$m);
 return $m;}
 public function GetKeyPhrs($array){
 $words_actual=json_decode( $this->hitFormPost("http://avimc1.interhost.co.il/wiki/interface.php",'data='.json_encode(array($array,$array)), "", ""),true);
